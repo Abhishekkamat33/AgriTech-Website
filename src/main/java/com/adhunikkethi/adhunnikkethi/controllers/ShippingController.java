@@ -1,0 +1,52 @@
+package com.adhunikkethi.adhunnikkethi.controllers;
+
+import com.adhunikkethi.adhunnikkethi.Dto.ShippingDto;
+import com.adhunikkethi.adhunnikkethi.Services.ShippingService;
+import com.adhunikkethi.adhunnikkethi.entities.Shipping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/shippings")
+public class ShippingController {
+
+    private final ShippingService shippingService;
+
+    public ShippingController(ShippingService shippingService) {
+        this.shippingService = shippingService;
+    }
+
+    @GetMapping
+    public List<Shipping> getAllShippings() {
+        return shippingService.getAllShippings();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Shipping> getShippingById(@PathVariable Long id) {
+        return shippingService.getShippingById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Shipping> createShipping(@RequestBody ShippingDto shippingDto) {
+        Shipping createdShipping = shippingService.createShipping(shippingDto);
+        return new ResponseEntity<>(createdShipping, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Shipping> updateShipping(@PathVariable Long id, @RequestBody ShippingDto shippingDto) {
+        return shippingService.updateShipping(id, shippingDto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteShipping(@PathVariable Long id) {
+        boolean deleted = shippingService.deleteShipping(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+}
