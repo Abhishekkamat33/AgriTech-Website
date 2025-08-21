@@ -8,8 +8,8 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run with Eclipse Temurin Java 21 runtime
-FROM eclipse-temurin:21-jdk
+# Stage 2: Run with Eclipse Temurin Java 17 runtime
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
 COPY --from=build /app/target/adhunnikkethi-0.0.1-SNAPSHOT.jar app.jar
