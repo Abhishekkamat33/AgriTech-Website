@@ -2,7 +2,6 @@ package com.adhunikkethi.adhunnikkethi.Services;
 
 import com.adhunikkethi.adhunnikkethi.Respository.ManufacturerRepository;
 import com.adhunikkethi.adhunnikkethi.entities.Manufacturer;
-import com.adhunikkethi.adhunnikkethi.services.ManufacturerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

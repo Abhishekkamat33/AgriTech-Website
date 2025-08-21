@@ -1,7 +1,7 @@
 package com.adhunikkethi.adhunnikkethi.controllers;
 
+import com.adhunikkethi.adhunnikkethi.Services.ManufacturerService;
 import com.adhunikkethi.adhunnikkethi.entities.Manufacturer;
-import com.adhunikkethi.adhunnikkethi.services.ManufacturerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

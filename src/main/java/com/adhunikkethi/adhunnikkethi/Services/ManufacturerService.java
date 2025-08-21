@@ -1,4 +1,4 @@
-package com.adhunikkethi.adhunnikkethi.services;
+package com.adhunikkethi.adhunnikkethi.Services;
 
 import com.adhunikkethi.adhunnikkethi.entities.Manufacturer;
 
