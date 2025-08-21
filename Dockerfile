@@ -1,11 +1,14 @@
-# Use a lightweight OpenJDK 17 base image
+# Build stage
+FROM maven:3.8.6-openjdk-21 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Run stage
 FROM openjdk:21-jdk-slim
-
-# Copy the jar file from target directory to the container
-COPY target/adhunnikkethi-0.0.1-SNAPSHOT.jar app.jar
-
-# Expose port 8080 for Spring Boot app
+WORKDIR /app
+COPY --from=build /app/target/adhunnikkethi-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
-
-# Command to run the jar file
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
