@@ -46,7 +46,7 @@ cd agritech-backend
 Create a database named `agritech` (or name of your choice).
 
 ```sql
-CREATE DATABASE agritech;
+CREATE DATABASE adhunnikkethi;
 ```
 
 3. Configure `application.properties` or `application.yml`
