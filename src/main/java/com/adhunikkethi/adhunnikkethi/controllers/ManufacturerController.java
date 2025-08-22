@@ -3,12 +3,14 @@ package com.adhunikkethi.adhunnikkethi.controllers;
 import com.adhunikkethi.adhunnikkethi.Services.ManufacturerService;
 import com.adhunikkethi.adhunnikkethi.entities.Manufacturer;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/manufacturers")
+@PreAuthorize("hasRole('ADMIN')")
 public class ManufacturerController {
 
     private final ManufacturerService manufacturerService;

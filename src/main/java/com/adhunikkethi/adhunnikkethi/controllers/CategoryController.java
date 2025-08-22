@@ -2,11 +2,13 @@ package com.adhunikkethi.adhunnikkethi.controllers;
 import com.adhunikkethi.adhunnikkethi.Services.CategoryService;
 import com.adhunikkethi.adhunnikkethi.entities.Category;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/categories")
 public class CategoryController {
 

@@ -4,6 +4,7 @@ import com.adhunikkethi.adhunnikkethi.Services.OrderDetailsService;
 import com.adhunikkethi.adhunnikkethi.entities.OrderDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class OrderDetailsController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<OrderDetails> getAllOrderDetails() {
         return orderDetailsService.getAllOrderDetails();
     }

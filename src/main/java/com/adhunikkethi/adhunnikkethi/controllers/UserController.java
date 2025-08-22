@@ -8,6 +8,7 @@ import com.adhunikkethi.adhunnikkethi.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,10 +51,12 @@ public class UserController {
         ResponseEntity<String> verifyResponse = userService.verify(user);
 
         if (!verifyResponse.getStatusCode().is2xxSuccessful()) {
+            assert verifyResponse.getBody() != null;
             return ResponseEntity.status(verifyResponse.getStatusCode())
                     .body(Map.of("error", verifyResponse.getBody()));
         }
 
+        assert verifyResponse.getBody() != null;
         return ResponseEntity.ok(Map.of("token", verifyResponse.getBody()));
     }
 
@@ -75,6 +78,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
