@@ -2,32 +2,31 @@ package com.adhunikkethi.adhunnikkethi.controllers;
 
 import com.adhunikkethi.adhunnikkethi.Respository.ProductRepository;
 import com.adhunikkethi.adhunnikkethi.entities.Product;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.MediaType;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+
     private final ProductRepository productRepository;
+    private final Cloudinary cloudinary;
 
     public ProductController(ProductRepository productRepository) {
         this.productRepository = productRepository;
+        this.cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", "drrcvdeb3",
+                "api_key", "617117693259415",        // Replace with your API key
+                "api_secret", "Lba2J9QTiS9yCZDmROuQ1fXGGf4"   // Replace with your API secret
+        ));
     }
 
     @GetMapping
@@ -69,49 +68,25 @@ public class ProductController {
         }
         return ResponseEntity.notFound().build();
     }
-    @GetMapping("/images/{filename:.+}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
-        try {
-            // Use double backslashes for path separators in Windows file path
-            Path imagePath = Paths.get("D:\\adhunikethi\\image").resolve(filename).normalize();
-            Resource resource = new UrlResource(imagePath.toUri());
 
-            if (resource.exists() && resource.isReadable()) {
-                // You may want to dynamically determine media type based on file extension
-                return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)  // Change accordingly for PNG etc.
-                        .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (MalformedURLException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
+    // Endpoint for uploading product image to Cloudinary
     @PostMapping("/uploadProductImage")
-    public ResponseEntity<String> uploadProductImage(@RequestParam("image") MultipartFile image) {
-        String uploadDir = "D:\\adhunikethi\\image";
+    public ResponseEntity<String> uploadProductImage(@RequestParam("file") MultipartFile image) {
         try {
-            String filename = StringUtils.cleanPath(image.getOriginalFilename());
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
+            if (image.isEmpty()) {
+                return ResponseEntity.badRequest().body("File is empty");
             }
-            Path filePath = uploadPath.resolve(filename);
-            Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Construct full URL to access the uploaded image
-            String imageUrl = "http://localhost:8080/api/products/images/" + filename;
+            Map uploadResult = cloudinary.uploader().upload(image.getBytes(),
+                    ObjectUtils.asMap("upload_preset", "my_store"));
+
+            String imageUrl = (String) uploadResult.get("secure_url");
 
             return ResponseEntity.ok(imageUrl);
 
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Could not upload the image: " + e.getMessage());
+            return ResponseEntity.status(500).body("Failed to upload image");
         }
     }
-
-
 }

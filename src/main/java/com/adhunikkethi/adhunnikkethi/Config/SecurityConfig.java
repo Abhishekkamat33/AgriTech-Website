@@ -32,8 +32,16 @@ private JwtFilter jwtFilter;
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/**", "/login", "/register","/swagger-ui/**", "/v3/api-docs/**","/api/products/images/{filename:.+}","/api/products/**","api/products/uploadProductImage/**","/api/manufacturers/**","/api/categories/**").permitAll()
+                        .requestMatchers(
+                                "/api/users/**", "/login", "/register", "/swagger-ui/**", "/v3/api-docs/**",
+                                "/api/products/images/**",
+                                "/api/products/uploadProductImage",
+                                "/api/products/**",
+                                "/api/manufacturers/**",
+                                "/api/categories/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
+
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -6,13 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
 @Entity
+@Table(name = "\"user\"") // Escaped the reserved keyword "user"
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,8 +48,6 @@ public class User {
         FARMER,
         DEALER,
         ADMIN;
-
-
     }
 
     // Enum for account status
@@ -59,5 +56,4 @@ public class User {
         INACTIVE,
         BANNED
     }
-
 }
