@@ -12,6 +12,7 @@ This is the backend API for the Agritech platform, developed using Spring Boot. 
 - Review management for products
 - Supports pagination and filtering on relevant endpoints
 - Integration with PostgreSQL database for reliable data storage
+- **eSewa payment gateway integration for online payments**
 
 ## Technology Stack
 
@@ -42,7 +43,7 @@ cd agritech-backend
 
 2. Set up the PostgreSQL database
 
-Create a database named `agritech` (or any name you prefer).
+Create a database named `agritech` (or name of your choice).
 
 ```sql
 CREATE DATABASE agritech;
@@ -50,7 +51,7 @@ CREATE DATABASE agritech;
 
 3. Configure `application.properties` or `application.yml`
 
-Update your database connection and JWT secrets in `src/main/resources/application.properties`:
+Update database connection details, JWT secrets, and eSewa configs in `src/main/resources/application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/agritech
@@ -61,11 +62,17 @@ spring.jpa.hibernate.ddl-auto=update
 
 jwt.secret=YourJWTSecretKey
 jwt.expiration=3600000
+
+# eSewa Payment Gateway Configuration
+esewa.merchantId=YOUR_MERCHANT_ID
+esewa.secretKey=YOUR_SECRET_KEY
+esewa.successUrl=https://your-domain.com/api/payment/success
+esewa.failUrl=https://your-domain.com/api/payment/fail
 ```
 
 ### Build and Run
 
-Build the project with Maven:
+Build the project using Maven:
 
 ```bash
 mvn clean install
@@ -77,48 +84,70 @@ Run the application:
 mvn spring-boot:run
 ```
 
-The API will start and listen on `http://localhost:8080`.
+The API will be available at `http://localhost:8080`.
 
 ## API Endpoints
 
 - **Authentication**
-  - `POST /api/users/register` — Register new user
+  - `POST /api/users/register` — Register new users
   - `POST /api/users/login` — Login and get JWT token
 
 - **Products**
   - `GET /api/products` — List all products
-  - `GET /api/products/{id}` — Get a product by ID
-  - `POST /api/products` — Create new product (auth required)
-  - `PUT /api/products/{id}` — Update product (auth required)
-  - `DELETE /api/products/{id}` — Delete product (auth required)
+  - `GET /api/products/{id}` — Get product by ID
+  - `POST /api/products` — Create new product (authentication required)
+  - `PUT /api/products/{id}` — Update product (authentication required)
+  - `DELETE /api/products/{id}` — Delete product (authentication required)
   - `POST /api/products/uploadProductImage` — Upload product image
 
 - **Reviews**
-  - `GET /api/reviews?productId={productId}` — Get reviews by product
-  - `POST /api/reviews` — Add a review (auth required)
+  - `GET /api/reviews?productId={productId}` — Get reviews for a product
+  - `POST /api/reviews` — Add a review (authentication required)
 
-(You can add more API documentation here)
+- **Payments**
+  - `POST /api/payment/initiate` — Initiate eSewa payment request
+  - `POST /api/payment/verify` — Verify payment status from eSewa callback
 
 ## Security
 
-- Passwords are securely hashed using BCrypt.
-- JWT tokens are signed with a secret key and validated on each request.
-- API endpoints are protected with role-based access via Spring Security annotations.
+- User passwords are hashed securely using BCrypt.
+- JWT tokens secure and authorize API access.
+- Role-based access control with Spring Security protects sensitive endpoints.
+
+## eSewa Payment Gateway Integration
+
+The backend integrates with the eSewa payment gateway to facilitate online payments for orders or services.
+
+- **Initiate payment:** Backend endpoint accepts payment details and creates a payment request to eSewa.
+- **Verify payment:** Backend verifies payment notifications (callbacks) from eSewa using their API.
+- **Update order status:** Orders are updated based on payment success or failure.
+
+### Configuration
+
+Add your merchant credentials and URLs to application properties as shown above.
+
+### Important Notes
+
+- Always verify payment transactions on the backend securely to prevent fraud.
+- Test integration thoroughly using eSewa sandbox before going live.
+- Log all payment transactions carefully.
 
 ## Environment Variables
 
-You can customize configuration by setting environment variables or overriding the `application.properties`.
+| Variable                    | Description                    | Default / Example                       |
+|-----------------------------|------------------------------|---------------------------------------|
+| `JWT_SECRET`                | JWT signing secret key        | `YourJWTSecretKey`                    |
+| `SPRING_DATASOURCE_URL`     | Database connection string    | `jdbc:postgresql://localhost:5432/agritech` |
+| `SPRING_DATASOURCE_USERNAME`| Database username             | `your_db_username`                    |
+| `SPRING_DATASOURCE_PASSWORD`| Database password             | `your_db_password`                    |
+| `ESEWA_MERCHANTID`          | eSewa merchant ID             | `YOUR_MERCHANT_ID`                    |
+| `ESEWA_SECRETKEY`           | eSewa secret key              | `YOUR_SECRET_KEY`                     |
+| `ESEWA_SUCCESSURL`          | eSewa payment success callback URL | `https://your-domain.com/api/payment/success` |
+| `ESEWA_FAILURL`             | eSewa payment failure callback URL | `https://your-domain.com/api/payment/fail` |
 
-| Variable          | Description                | Default                  |
-|-------------------|----------------------------|--------------------------|
-| `JWT_SECRET`      | JWT signing secret key     | `YourJWTSecretKey`       |
-| `SPRING_DATASOURCE_URL`      | Database connection string | `jdbc:postgresql://localhost:5432/agritech` |
-| `SPRING_DATASOURCE_USERNAME` | Database username          | `your_db_username`       |
-| `SPRING_DATASOURCE_PASSWORD` | Database password          | `your_db_password`       |
+## Contributing
 
-## Contributions
-
-Contributions are welcome! Please open a pull request or submit an issue.
+Contributions are welcome! Please fork the repository and submit pull requests for improvements or bug fixes.
 
 ## License
 
@@ -126,4 +155,4 @@ This project is licensed under the MIT License.
 
 ***
 
-Feel free to adjust the repository URL, properties, and specific features according to your project details. If you want, I can help generate more detailed API documentation or setup instructions.
+Feel free to customize repository URLs, endpoints, and configuration values to fit your project specifics. If you want, I can help write example code or API documentation for the eSewa integration.
