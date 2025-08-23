@@ -1,5 +1,6 @@
 package com.adhunikkethi.adhunnikkethi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "orders")  // 'order' is a reserved keyword in some databases
 @ToString(exclude = {"user", "shipping", "payment", "orderDetails"})
+
 public class Order {
 
     @Id
@@ -27,16 +29,19 @@ public class Order {
     // Many-to-one relationship with User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private User user;
 
     // Many-to-one relationship with Shipping
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shipping_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Shipping shipping;
 
     // Many-to-one relationship with Payment
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Payment payment;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -55,6 +60,7 @@ public class Order {
     // In Order entity
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<OrderDetails> orderDetails = new ArrayList<>();
 
     public enum Status {

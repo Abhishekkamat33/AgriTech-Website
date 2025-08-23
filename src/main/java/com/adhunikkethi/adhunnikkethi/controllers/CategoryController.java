@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/api/categories")
 public class CategoryController {
 
@@ -19,6 +18,7 @@ public class CategoryController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }

@@ -1,6 +1,7 @@
 package com.adhunikkethi.adhunnikkethi.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = "order")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class OrderDetails {
 
     @Id
