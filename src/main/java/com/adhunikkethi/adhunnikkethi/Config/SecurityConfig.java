@@ -57,7 +57,11 @@ private JwtFilter jwtFilter;
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of(
+                "https://agri-tech-admin-dashboard.vercel.app",
+                "http://localhost:3000"
+                // Add more frontend URLs if needed
+        ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         config.setAllowCredentials(true);
