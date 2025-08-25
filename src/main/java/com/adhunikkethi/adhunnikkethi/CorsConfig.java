@@ -15,7 +15,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(
-                                "https://agri-tech-admin-dashboard.vercel.app", // Your deployed frontend URL
+                                "https://agri-tech-admin-dashboard.vercel.app/*", // Your deployed frontend URL
                                 "http://localhost:3000"                         // Your local frontend URL
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
