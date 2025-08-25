@@ -58,7 +58,7 @@ private JwtFilter jwtFilter;
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "https://agri-tech-admin-dashboard.vercel.app/*",
+                "https://agri-tech-admin-dashboard.vercel.app",
                 "http://localhost:3000"
                 // Add more frontend URLs if needed
         ));
