@@ -1,7 +1,6 @@
 package com.adhunikkethi.adhunnikkethi.Services;
 
 import com.adhunikkethi.adhunnikkethi.Dto.OrderDetailsDto;
-import com.adhunikkethi.adhunnikkethi.Dto.OrderDto;
 import com.adhunikkethi.adhunnikkethi.Dto.OrderResponseDto;
 import com.adhunikkethi.adhunnikkethi.Respository.*;
 import com.adhunikkethi.adhunnikkethi.entities.*;
@@ -37,11 +36,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderResponseDto> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAllWithOrderDetails();
         return orders.stream()
                 .map(this::convertToResponseDto)
                 .collect(Collectors.toList());
     }
+
 
 
     @Override
@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderResponseDto createOrder(OrderDto orderDto) {
+    public OrderResponseDto createOrder(OrderResponseDto orderDto) {
         Long userId = orderDto.getUserId();
         Long shippingId = orderDto.getShippingId();
 
@@ -92,24 +92,26 @@ public class OrderServiceImpl implements OrderService {
     private OrderResponseDto convertToResponseDto(Order order) {
         OrderResponseDto dto = new OrderResponseDto();
         dto.setOrderId(order.getOrderId());
-        dto.setUserId(order.getUser() != null ? order.getUser().getUserId() : null);
-        dto.setShippingId(order.getShipping() != null ? order.getShipping().getShippingId() : null);
-        dto.setPaymentId(order.getPayment() != null ? order.getPayment().getPaymentId() : null);
+        dto.setUserId(order.getUser().getUserId());
+        dto.setShippingId(order.getShipping().getShippingId());
+        dto.setPaymentId(order.getPayment()!=null ? order.getPayment().getPaymentId() : null);
         dto.setTotalPrice(order.getTotalPrice());
-        dto.setStatus(order.getStatus() != null ? order.getStatus().name() : null);
+        dto.setStatus(order.getStatus().name());
         dto.setOrderDate(order.getOrderDate());
         dto.setComment(order.getComment());
-        if (order.getOrderDetails() != null) {
-            List<OrderDetailsDto> detailsDto = order.getOrderDetails().stream()
-                    .map(od -> new OrderDetailsDto(
-                            od.getOrderDetailsId(),
-                            od.getOrder() != null ? od.getOrder().getOrderId() : null,
-                            od.getProduct() != null ? od.getProduct().getProductId() : null,
-                            od.getQuantity(),
-                            od.getPrice()))
-                    .collect(Collectors.toList());
-            dto.setOrderDetails(detailsDto);
-        }
+
+        List<OrderDetailsDto> orderDetailsDtos = order.getOrderDetails().stream()
+                .map(details -> {
+                    OrderDetailsDto detailsDto = new OrderDetailsDto();
+                    detailsDto.setOrderDetailsId(details.getOrderDetailsId());
+                    detailsDto.setOrderId(order.getOrderId());
+                    detailsDto.setProductId(details.getProduct().getProductId());
+                    detailsDto.setQuantity(details.getQuantity());
+                    detailsDto.setPrice(details.getPrice());
+                    return detailsDto;
+                }).collect(Collectors.toList());
+
+        dto.setOrderDetails(orderDetailsDtos);
         return dto;
     }
 

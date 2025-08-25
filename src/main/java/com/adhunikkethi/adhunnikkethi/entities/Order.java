@@ -58,9 +58,9 @@ public class Order {
     private String comment;
 
     // In Order entity
-    @OneToMany(fetch = FetchType.EAGER)
     @JsonManagedReference
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderDetails> orderDetails = new ArrayList<>();
 
     public enum Status {
