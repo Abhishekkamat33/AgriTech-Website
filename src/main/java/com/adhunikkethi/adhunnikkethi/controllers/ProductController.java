@@ -1,5 +1,6 @@
 package com.adhunikkethi.adhunnikkethi.controllers;
 
+import com.adhunikkethi.adhunnikkethi.Dto.ProductDto;
 import com.adhunikkethi.adhunnikkethi.Respository.ProductRepository;
 import com.adhunikkethi.adhunnikkethi.entities.Product;
 import com.cloudinary.Cloudinary;
@@ -31,9 +32,26 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        // Convert entities to DTOs
+        List<ProductDto> productDtos = products.stream().map(product -> {
+            ProductDto dto = new ProductDto();
+            dto.setProductId(product.getProductId());
+            dto.setName(product.getName());
+            dto.setDescription(product.getDescription());
+            dto.setPrice(product.getPrice());
+            dto.setStock(product.getStock());
+            dto.setImage(product.getImage());
+            dto.setCategoryId(product.getCategory().getCategoryId());
+            dto.setManufacturerId(product.getManufacturer().getManufacturerId());
+            dto.setStatus(product.getStatus().name());
+            dto.setAddedDate(product.getAddedDate());
+            return dto;
+        }).toList();
+        return productDtos;
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
