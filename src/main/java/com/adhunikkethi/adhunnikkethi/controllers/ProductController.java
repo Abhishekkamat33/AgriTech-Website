@@ -54,10 +54,27 @@ public class ProductController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
         Optional<Product> product = productRepository.findById(id);
-        return product.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        if (product.isPresent()) {
+            Product p = product.get();
+            ProductDto dto = new ProductDto();
+            dto.setProductId(p.getProductId());
+            dto.setName(p.getName());
+            dto.setDescription(p.getDescription());
+            dto.setPrice(p.getPrice());
+            dto.setStock(p.getStock());
+            dto.setImage(p.getImage());
+            dto.setCategoryId(p.getCategory().getCategoryId());
+            dto.setManufacturerId(p.getManufacturer().getManufacturerId());
+            dto.setStatus(p.getStatus().name());
+            dto.setAddedDate(p.getAddedDate());
+            return ResponseEntity.ok(dto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
