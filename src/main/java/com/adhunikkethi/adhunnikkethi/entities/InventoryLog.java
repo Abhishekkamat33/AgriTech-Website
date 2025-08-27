@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,6 +36,29 @@ public class InventoryLog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     private Admin admin;
+
+
+    @Column(name = "batch_number")
+    private String batchNumber;
+
+    @Column(name = "warehouse_location")
+    private String warehouseLocation;
+
+    @Column(name = "remarks")
+    private String remarks;
+
+    @Column(name = "unit")
+    private String unit;
+
+    @Column(name = "transaction_reference")
+    private String transactionReference;
+
+    @Column(name = "expiration_date")
+    private LocalDate expirationDate;
+
+    @Column(name = "cost")
+    private BigDecimal cost;
+
 
     public enum ChangeType {
         ADD,

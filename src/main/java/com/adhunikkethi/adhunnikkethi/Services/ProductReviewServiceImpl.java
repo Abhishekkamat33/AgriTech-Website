@@ -58,12 +58,19 @@ public class ProductReviewServiceImpl implements ProductReviewService {
         return pr;
     }
 
-    @Override
+    @Transactional
     public List<ProductReviewDto> getAllProductReviews() {
-        return productReviewRepository.findAll().stream()
+        List<ProductReview> reviews = productReviewRepository.findAll();
+        // Initialize lazy fields before mapping
+        reviews.forEach(pr -> {
+            pr.getUser().getName();
+            pr.getProduct().getName();
+        });
+        return reviews.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public Optional<ProductReviewDto> getProductReviewById(Long id) {
